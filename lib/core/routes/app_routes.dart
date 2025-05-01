@@ -3,7 +3,7 @@ import 'package:movie_tmdb/core/routes/route_names.dart';
 import 'package:movie_tmdb/presentation/screens/home_screen.dart';
 import 'package:movie_tmdb/presentation/screens/people_screen.dart';
 import 'package:movie_tmdb/presentation/widgets/movie_trailer_screen.dart';
-import 'package:movie_tmdb/presentation/widgets/result_page_screen.dart';
+import 'package:movie_tmdb/presentation/screens/result_page_screen.dart';
 
 class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -25,22 +25,21 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => MovieTrailerScreen(id: id));
 
       case RouteNames.searchedMovie:
-  final args = settings.arguments as Map<String, dynamic>?;
-  final idString = args?['id'];
+        final args = settings.arguments as Map<String, dynamic>?;
+        final idString = args?['id'];
 
-  final movieId = int.tryParse(idString?.toString() ?? '');
+        final movieId = int.tryParse(idString?.toString() ?? '');
 
-  if (movieId == null) {
-    return MaterialPageRoute(
-      builder: (_) => Scaffold(
-        body: Center(child: Text('Invalid movie ID')),
-      ),
-    );
-  }
+        if (movieId == null) {
+          return MaterialPageRoute(
+            builder:
+                (_) => Scaffold(body: Center(child: Text('Invalid movie ID'))),
+          );
+        }
 
-  return MaterialPageRoute(
-    builder: (_) => ResultPageScreen(movieId: movieId),
-  );
+        return MaterialPageRoute(
+          builder: (_) => ResultPageScreen(movieId: movieId),
+        );
 
       // case RouteNames.tvToprated:
       // return MaterialPageRoute(builder: (_) => TvTopRated());

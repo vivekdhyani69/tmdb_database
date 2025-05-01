@@ -1,3 +1,4 @@
+import 'package:movie_tmdb/domain/entities/free_watch_entity.dart';
 import 'package:movie_tmdb/domain/entities/movie_entity.dart';
 import 'package:movie_tmdb/domain/entities/search_entity.dart';
 import 'package:movie_tmdb/domain/entities/trailerModel_entity.dart';
@@ -12,6 +13,10 @@ abstract class MovieRepository {
   Future<List<SearchEntity>> getSearchMovies(String query);
   Future<MovieEntity> getMovieById(int id);
 
+  Future<List<FreeWatchEntity>> getFreeWatchMovies();
+
+  @override
+  Future<void> rateMovie(int movieId, double rating);
 }
 
 

@@ -8,6 +8,7 @@ class MovieDetailBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
 
   MovieDetailBloc(this.getMovieById) : super(MovieDetailsInitial()) {
     on<FetchMovieDetailsEvent>((event, emit) async {
+      ///With the help of this we can register events
       emit(MovieDetailsLoading());
       try {
         final movie = await getMovieById(event.movieId);
@@ -18,3 +19,7 @@ class MovieDetailBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
     });
   }
 }
+////Why we passings getMovieByIdUseCase here only ofr seperation of concerns ..Because now movieBloc  is not directly deal with dataSource like Api db operation
+///It focusing only on Ui logic or state .Not business logic
+
+//Always Ui dispatched an event and bloc listens to it and then emits new states as per dispatching Bloc

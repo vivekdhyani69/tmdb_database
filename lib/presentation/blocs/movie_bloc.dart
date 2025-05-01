@@ -8,10 +8,13 @@ class MovieBloc extends Bloc<MovieEvent, MovieState> {
 
   MovieBloc(this.movieRepository) : super(MovieInitial()) {
     on<FetchTrendingMoviesEvent>((event, emit) async {
+      ///Alternative of View Model
       emit(MovieLoading());
 
       try {
         final movie = await movieRepository.getTrendingMovies();
+
+        ///this returns the array of object of movies
 
         emit(MovieLoaded(movie));
       } catch (e) {

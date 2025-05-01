@@ -9,6 +9,7 @@ import 'package:movie_tmdb/presentation/blocs/search_bloc/search_bloc.dart';
 import 'package:movie_tmdb/presentation/blocs/search_bloc/search_event.dart';
 import 'package:movie_tmdb/presentation/blocs/search_bloc/search_state.dart';
 import 'package:movie_tmdb/presentation/widgets/custom_app_bar.dart';
+import 'package:movie_tmdb/presentation/widgets/free_to_watch.dart';
 // import 'package:movie_tmdb/presentation/widgets/latest_trailer/popular.dart';
 import 'package:movie_tmdb/presentation/widgets/trending_movies.dart';
 
@@ -21,6 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedTab = 0;
+  int selectedTab1 = 0;
   Timer?
   _debounceTimer; //Add this variable at the class level to store to the time
   final TextEditingController controller = TextEditingController();
@@ -34,8 +36,7 @@ class _HomePageState extends State<HomePage> {
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
         _removeOverlay();
-showDropdown=false;
-      
+        showDropdown = false;
       }
     });
 
@@ -145,9 +146,8 @@ showDropdown=false;
                       context.read<SearchBloc>().add(SearchQueryChanged(value));
                     });
                   },
-                 
+
                   //for search field
-                 
                   style: TextStyle(
                     color: Color.fromRGBO(172, 172, 172, 1),
                     fontFamily: 'Poppins',
@@ -182,26 +182,23 @@ showDropdown=false;
                             itemBuilder: (context, index) {
                               final movie = state.results[index];
                               return GestureDetector(
-                                onTap: ()async {
+                                onTap: () async {
                                   final movieId = movie.id.toString();
 
                                   // Trigger navigation after the current frame
 
-                                await  Navigator.pushNamed(
+                                  await Navigator.pushNamed(
                                     context,
                                     RouteNames.searchedMovie,
                                     arguments: {'id': movieId},
                                   );
 
-                                  
-                                      controller.clear(); // Clear text field
-                                      _removeOverlay(); // Remove overlay
-                                      _focusNode
-                                          .unfocus(); // Unfocus text field
-                                            setState(() {
-    showDropdown = false; // Close dropdown
-  });
-                               
+                                  controller.clear(); // Clear text field
+                                  _removeOverlay(); // Remove overlay
+                                  _focusNode.unfocus(); // Unfocus text field
+                                  setState(() {
+                                    showDropdown = false; // Close dropdown
+                                  });
                                 },
 
                                 child: ListTile(title: Text(movie.title)),
@@ -213,97 +210,109 @@ showDropdown=false;
                       return Center(child: CircularProgressIndicator());
                     },
                   ),
-            
-            
               ],
             ),
 
             Container(
-              height: 300,
+              // height: 300,
               width: double.maxFinite,
 
               decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, .2)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 40),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Text(
-                      'Welcome.',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 40,
-                        height: 1.1,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Text(
-                      'Millions of movies, TV shows and people to discover. Explore now.',
-                      style: TextStyle(
-                        color: const Color.fromRGBO(255, 255, 255, 1),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 35,
-                        height: 1.1,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Container(
-                    
-                    width: 1200,
-                    padding: EdgeInsets.only(left: 30, right: 30),
-                    child: TextField(
-                      controller: controller,
-                      style: TextStyle(color: Color.fromRGBO(172, 172, 172, 1)),
-                      decoration: InputDecoration(
-                        suffixIcon: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(16, 197, 198, 1),
-                          ),
-
-                          onPressed: () {
-                            // context.read<SearchBloc>().add(
-                            //   SearchQueryChanged(controller.text),
-                            // );
-                          },
-                          child: Text(
-                            'Search',
-                            style: TextStyle(color: Colors.white),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 40),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Text(
+                          'Welcome.',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 40,
+                            height: 1.1,
                           ),
                         ),
-                        hintText: 'Search for movie, tv shows, person...',
-                        // hintStyle: TextStyle(color: Colors.grey),
-                        filled: true, // 👈 enables background
-                        fillColor: Colors.white, // 👈 sets background to white
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 15,
-                          horizontal: 20,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50),
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50),
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50),
-                          borderSide: BorderSide(
-                            color: Colors.blueAccent,
-                            width: 2,
-                          ), // optional highlight on focus
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Text(
+                          'Millions of movies, TV shows and people to discover. Explore now.',
+                          style: TextStyle(
+                            color: const Color.fromRGBO(255, 255, 255, 1),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 35,
+                            height: 1.1,
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                      SizedBox(height: 30),
+                      Container(
+                        width: double.maxFinite,
 
-                  SizedBox(height: 80),
-                ],
+                        ///It means use as much avaiable space as possible
+                        padding: EdgeInsets.only(left: 30, right: 30),
+                        child: TextField(
+                          controller: controller,
+                          style: TextStyle(
+                            color: Color.fromRGBO(172, 172, 172, 1),
+                          ),
+                          decoration: InputDecoration(
+                            suffixIcon: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color.fromRGBO(
+                                  16,
+                                  197,
+                                  198,
+                                  1,
+                                ),
+                              ),
+
+                              onPressed: () {
+                                // context.read<SearchBloc>().add(
+                                //   SearchQueryChanged(controller.text),
+                                // );
+                              },
+                              child: Text(
+                                'Search',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            hintText: 'Search for movie, tv shows, person...',
+                            // hintStyle: TextStyle(color: Colors.grey),
+                            filled: true, // 👈 enables background
+                            fillColor:
+                                Colors.white, // 👈 sets background to white
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 15,
+                              horizontal: 20,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors.blueAccent,
+                                width: 2,
+                              ), // optional highlight on focus
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 80),
+                    ],
+                  ),
+                ),
               ),
             ),
 
@@ -342,9 +351,47 @@ showDropdown=false;
                 ],
               ),
             ),
+
             SizedBox(height: 20),
             selectedTab == 0 ? MovieCardList() : MovieCardList(),
             SizedBox(height: 20),
+            SizedBox(height: 25),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Free To Watch",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                  ),
+                  SizedBox(width: 10),
+                  TabButton(
+                    text: "Movies",
+                    index: 0,
+                    selectedTab: selectedTab1,
+                    onPressed: () {
+                      setState(() {
+                        selectedTab1 = 0;
+                      });
+                    },
+                  ),
+                  SizedBox(width: 10),
+                  TabButton(
+                    text: "TV",
+                    index: 1,
+                    selectedTab: selectedTab1,
+                    onPressed: () {
+                      setState(() {
+                        selectedTab1 = 1;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            FreeToWatch(),
             // PopularHtml(),
           ],
         ),

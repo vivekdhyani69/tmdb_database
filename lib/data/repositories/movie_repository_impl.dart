@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:movie_tmdb/core/constants/api_constants.dart';
+import 'package:movie_tmdb/data/models/freeWatch_model.dart';
 import 'package:movie_tmdb/data/models/movie_model.dart';
 import 'package:movie_tmdb/data/models/searchList_model.dart';
 import 'package:movie_tmdb/data/models/trailer_models.dart';
 import 'package:movie_tmdb/data/models/trending_movie.dart';
+import 'package:movie_tmdb/domain/entities/free_watch_entity.dart';
 import 'package:movie_tmdb/domain/entities/movie_entity.dart';
 import 'package:movie_tmdb/domain/entities/search_entity.dart';
 
@@ -84,24 +86,64 @@ class MovieRepositoryImpl implements MovieRepository {
     }
   }
 
-Future<MovieEntity> getMovieById(int id) async{
+  Future<MovieEntity> getMovieById(int id) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/movie/$id?language=en-US');
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${ApiConstants.token}',
+        'Accept': 'application/json',
+      },
+    );
 
-  final url = Uri.parse('${ApiConstants.baseUrl}/movie/$id?language=en-US');
-  final response = await http.get(
-    url,
-    headers: {
-      'Authorization': 'Bearer ${ApiConstants.token}',
-      'Accept': 'application/json',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    final jsonData = jsonDecode(response.body);
-    return MovieModel.fromJson(jsonData);
-  } else {
-    throw Exception('Failed to load More');
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      return MovieModel.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load More');
+    }
   }
-}
 
+  Future<List<FreeWatchEntity>> getFreeWatchMovies() async {
+    ///correct u makes a method action but where we calls it
+    final url = Uri.parse(
+      '${ApiConstants.baseUrl}/movie/popular?language=en-US&page=1',
+    );
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${ApiConstants.token}',
+        'Accept': 'application/json',
+      },
+    );
 
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      final List movies = jsonData['results'];
+
+      return movies.map((movie) => FreewatchModel.fromJson(movie)).toList();
+    } else {
+      throw Exception('Failed to load free watch movies');
+    }
+  }
+
+  ///Its a post api for rating a movie as per movieid and the rating which is gives by user
+  Future<void> rateMovie(int movieId, double rating) async {
+    final url = Uri.parse(
+      '${ApiConstants.baseUrl}/movie/$movieId/rating?language=en-US',
+    );
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${ApiConstants.token}',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'value': rating}),
+    );
+    if (response.statusCode != 201 && response.statusCode != 200) {
+      throw Exception('Failed to rate movie');
+    }
+    // print('Movie rated successfully');
+  }
 }
