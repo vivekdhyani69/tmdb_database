@@ -7,6 +7,7 @@ import 'package:movie_tmdb/presentation/blocs/movie_event.dart';
 import 'package:movie_tmdb/presentation/blocs/movie_ratings/movie_rating_bloc.dart';
 import 'package:movie_tmdb/presentation/blocs/movie_ratings/movie_rating_event.dart';
 import 'package:movie_tmdb/presentation/blocs/movie_state.dart';
+import 'package:movie_tmdb/presentation/widgets/movie_dropdown_menu.dart';
 import 'package:movie_tmdb/presentation/widgets/movie_trailer_screen.dart';
 
 class MovieCardList extends StatefulWidget {
@@ -136,152 +137,10 @@ class _MovieCardListState extends State<MovieCardList> {
                                 ),
                               ),
                             ),
-                            PopupMenuButton<int>(
-                              icon: Icon(
-                                Icons.more_horiz_rounded,
-                                color: Colors.white,
-                              ),
-                              onSelected: (value) {
-                                if (value == 0) {
-                                  print("Add to List");
-                                } else if (value == 1) {
-                                  print("Favorite");
-                                } else if (value == 2) {
-                                  print("Watchlist");
-                                }
-                              },
-                              itemBuilder:
-                                  (context) => [
-                                    const PopupMenuItem(
-                                      value: 0,
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.add_circle_outline),
-                                          SizedBox(width: 8),
-                                          Text("Add to List"),
-                                        ],
-                                      ),
-                                    ),
-                                    const PopupMenuDivider(),
-                                    const PopupMenuItem(
-                                      value: 1,
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.favorite_outline),
-                                          SizedBox(width: 8),
-                                          Text("Favorite"),
-                                        ],
-                                      ),
-                                    ),
-                                    const PopupMenuDivider(),
-                                    const PopupMenuItem(
-                                      value: 2,
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.watch_later_outlined),
-                                          SizedBox(width: 8),
-                                          Text("Watchlist"),
-                                        ],
-                                      ),
-                                    ),
-                                    const PopupMenuDivider(),
 
-                                    /// ⭐ STAR RATING MENU
-                                    PopupMenuItem(
-                                      enabled:
-                                          false, // prevent auto-close on tap
-                                      child: StatefulBuilder(
-                                        builder: (context, localSetState) {
-                                          int localSelectedRating =
-                                              (movie.voteAverage / 2)
-                                                  .round(); // ⭐ pre-fill based on API
-
-                                          return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              InkWell(
-                                                onTap: () {
-                                                  localSetState(() {
-                                                    showRating = !showRating;
-                                                  });
-                                                },
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      showRating
-                                                          ? Icons.star
-                                                          : Icons.star_border,
-                                                      color: Colors.amber,
-                                                    ),
-                                                    SizedBox(width: 8),
-                                                    Text("Your Rating"),
-                                                  ],
-                                                ),
-                                              ),
-                                              if (showRating)
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                        top: 12.0,
-                                                      ),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: List.generate(5, (
-                                                      index,
-                                                    ) {
-                                                      return IconButton(
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        constraints:
-                                                            BoxConstraints(),
-                                                        icon: Icon(
-                                                          index < selectedRating
-                                                              ? Icons.star
-                                                              : Icons
-                                                                  .star_border,
-                                                          color: Colors.amber,
-                                                          size: 24,
-                                                        ),
-                                                        onPressed: () {
-                                                          localSetState(() {
-                                                            selectedRating =
-                                                                index + 1;
-                                                          });
-
-                                                          // 🔥 Dispatch Bloc Event
-                                                          context
-                                                              .read<
-                                                                MovieRatingBloc
-                                                              >()
-                                                              .add(
-                                                                SubmitRatingEvent(
-                                                                  movieId:
-                                                                      movie
-                                                                          .id, // <<-- ensure movie.id is available in scope
-                                                                  rating:
-                                                                      (index +
-                                                                          1) *
-                                                                      2.0, // scale to 10
-                                                                ),
-                                                              );
-
-                                                          // ✅ Close the dropdown manually
-                                                          Navigator.of(
-                                                            context,
-                                                          ).pop();
-                                                        },
-                                                      );
-                                                    }),
-                                                  ),
-                                                ),
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
+                            MovieOptionsMenu(
+                              movieId: movie.id,
+                              voteAverage: movie.voteAverage,
                             ),
                           ],
                         ),

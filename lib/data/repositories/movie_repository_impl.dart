@@ -146,4 +146,25 @@ class MovieRepositoryImpl implements MovieRepository {
     }
     // print('Movie rated successfully');
   }
+
+  Future<double> getUserRating(int movieId) async {
+    final url = Uri.parse(
+      '${ApiConstants.baseUrl}/movie/$movieId/account_states',
+    );
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${ApiConstants.token}',
+        'Accept': 'application/json',
+      },
+    );
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      print(jsonData);
+      return jsonData['rated']?['value']?.toDouble() ?? 0.0;
+    } else {
+      throw Exception('Failed to get user rating');
+    }
+  }
 }

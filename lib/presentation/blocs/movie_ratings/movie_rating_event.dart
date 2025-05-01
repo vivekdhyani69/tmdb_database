@@ -8,3 +8,11 @@ class SubmitRatingEvent extends MovieRatingEvent {
 
   SubmitRatingEvent({required this.movieId, required this.rating});
 }
+
+class FetchRatingEvent extends MovieRatingEvent {
+  ///fetch rating event
+  ///This is the event which is used to fetch the rating of a movie this is the event which is used to fetch the rating of a movie
+  final int movieId;
+
+  FetchRatingEvent({required this.movieId});
+}

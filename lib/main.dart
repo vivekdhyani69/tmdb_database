@@ -5,7 +5,9 @@ import 'package:movie_tmdb/data/repositories/movie_repository_impl.dart';
 import 'package:movie_tmdb/data/repositories/people_repository_impl.dart';
 import 'package:movie_tmdb/domain/usecases/free_watch_movie_useCase.dart';
 import 'package:movie_tmdb/domain/usecases/get_movie_by_id_usecase.dart';
+
 import 'package:movie_tmdb/domain/usecases/get_movie_trailer.dart';
+import 'package:movie_tmdb/domain/usecases/get_user_movie_rating_usecase.dart';
 import 'package:movie_tmdb/domain/usecases/rate_movie_usecase.dart';
 import 'package:movie_tmdb/domain/usecases/search_movies.dart';
 import 'package:movie_tmdb/presentation/blocs/free_to_watch/free_watch_bloc.dart';
@@ -28,6 +30,7 @@ void main() {
     movieRepository,
   ); // Pass this to the bloc
   final rateMovieUsecase = RateMovieUsecase(movieRepository);
+  final getUserMovieratingUsecase = GetUserMovieRatingUsecase(movieRepository);
   final searchMovie = SearchMovies(
     movieRepository,
   ); //it returns a list of movies based on the search query
@@ -64,7 +67,11 @@ void main() {
             create: (context) => FreeWatchBloc(getFreeWatchMovies),
           ),
           BlocProvider<MovieRatingBloc>(
-            create: (context) => MovieRatingBloc(rateMovieUsecase),
+            create:
+                (context) => MovieRatingBloc(
+                  rateMovieUsecase: rateMovieUsecase,
+                  getUserMovieRatingUsecase: getUserMovieratingUsecase,
+                ),
           ),
         ],
         child: const MyApp(),

@@ -5,6 +5,7 @@ class TrendingMovie {
   final String backdropPath;
   final double voteAverage;
   final String releaseDate;
+  final int vote_count;
   final String original_title;
   final String overview;
 
@@ -17,5 +18,6 @@ class TrendingMovie {
     required this.releaseDate,
     required this.original_title,
     required this.overview,
+    required this.vote_count,
   });
 }

@@ -10,6 +10,7 @@ class TrendingMovieModel extends TrendingMovie {
     required super.releaseDate,
     required super.original_title,
     required super.overview,
+    required super.vote_count,
   });
 
   ///Now we converts a Json object  into a dart object model
@@ -24,6 +25,7 @@ class TrendingMovieModel extends TrendingMovie {
       releaseDate: json['release_date'] ?? '',
       original_title: json['original_title'] ?? '',
       overview: json['overview'] ?? '',
+      vote_count: json['vote_count'] ?? 0,
     );
   }
 }

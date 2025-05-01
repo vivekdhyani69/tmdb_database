@@ -15,8 +15,8 @@ abstract class MovieRepository {
 
   Future<List<FreeWatchEntity>> getFreeWatchMovies();
 
-  @override
   Future<void> rateMovie(int movieId, double rating);
+  Future<double> getUserRating(int movieId);
 }
 
 

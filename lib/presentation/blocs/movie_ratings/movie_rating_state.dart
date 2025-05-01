@@ -1,5 +1,12 @@
 abstract class MovieRatingState {}
 
+class MovieRatingLoaded extends MovieRatingState {
+  ///why this state accepts this rating  value from the ui and then we pass it to the event which is in the bloc
+  ///this is the state which is used to load the rating of a movie this is the state which is used to load the rating of a movie
+  final double rating;
+  MovieRatingLoaded({required this.rating});
+}
+
 class MovieRatingInitial extends MovieRatingState {}
 
 class MovieRatingSubmitting extends MovieRatingState {
