@@ -161,7 +161,12 @@ class MovieRepositoryImpl implements MovieRepository {
     );
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      print(jsonData);
+      // If 'rated' is false, return 0.0
+      if (jsonData['rated']?['value'] == false) {
+        return 0.0;
+      }
+      print((jsonData['rated']?['value']?.toDouble() ?? 0.0) + jsonData['id']);
+
       return jsonData['rated']?['value']?.toDouble() ?? 0.0;
     } else {
       throw Exception('Failed to get user rating');

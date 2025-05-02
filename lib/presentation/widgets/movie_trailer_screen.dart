@@ -14,7 +14,6 @@ class MovieTrailerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-    
       create:
           (context) => MovieTrailerBloc(
             //ALways Ui to bloc data is gone
@@ -37,19 +36,19 @@ class MovieTrailerScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final trailer = state.trailers[index];
 
-                  // Construct YouTube URL using the 'key'
+                  // Correct embed URL
                   final trailerUrl =
-                      'https://www.youtube.com/watch?v=${trailer.key}';
+                      'https://www.youtube.com/embed/${trailer.key}';
 
-                  return ListTile(
-                    title: Text(trailer.name),
-                    subtitle: Text(trailer.type),
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: YouTubeIframeWidget(
+                      videoUrl: trailerUrl,
+                      title: trailer.name,
+                      subtitle: trailer.type,
+                      viewType: 'iframeElement$index', // Ensure unique viewType
+                    ),
                   );
-                  // return YouTubeIframeScreen(
-                  //   videoUrl: trailerUrl,
-                  //   // title: trailer.name,
-                  //   // type: trailer.type,
-                  // );
                 },
               );
             } else if (state is MovieTrailerError) {

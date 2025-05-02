@@ -1,53 +1,79 @@
 import 'dart:html';
-import 'dart:ui' as ui;
-
+// import 'dart:ui' as ui;
+import 'dart:ui_web' as ui;
 import 'package:flutter/material.dart';
 
-class YouTubeIframeScreen extends StatefulWidget {
+class YouTubeIframeWidget extends StatefulWidget {
   final String videoUrl;
+  final String title;
+  final String subtitle;
+  final String viewType; // Ensure unique iframe registration
 
-  // Constructor to accept videoUrl
-  YouTubeIframeScreen({required this.videoUrl});
+  const YouTubeIframeWidget({
+    super.key,
+    required this.videoUrl,
+    required this.title,
+    required this.subtitle,
+    required this.viewType,
+  });
 
   @override
-  State<YouTubeIframeScreen> createState() => _IframeScreenState();
+  State<YouTubeIframeWidget> createState() => _YouTubeIframeWidgetState();
 }
 
-class _IframeScreenState extends State<YouTubeIframeScreen> {
-  final IFrameElement _iFrameElement = IFrameElement();
+class _YouTubeIframeWidgetState extends State<YouTubeIframeWidget> {
+  late final IFrameElement _iFrameElement;
 
   @override
   void initState() {
-    _iFrameElement.style.height = '50%';
-    _iFrameElement.style.width = '50%';
-    _iFrameElement.src = widget.videoUrl;
+    super.initState();
 
-    _iFrameElement.style.border = 'none';
+    _iFrameElement =
+        IFrameElement()
+          ..style.border = 'none'
+          ..style.width = '400px'
+          ..style.height = '300px'
+          ..width = '400'
+          ..height = '300'
+          ..src = widget.videoUrl;
 
+    // Register iframe with unique viewType
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(
-      'iframeElement',
+      widget.viewType,
       (int viewId) => _iFrameElement,
     );
-
-    super.initState();
   }
 
-  final Widget _iframeWidget = HtmlElementView(
-    ///creates the widget which is show the pdf which is registered
-    viewType: 'iframeElement',
-    key: UniqueKey(),
-  );
+  @override
+  void dispose() {
+    _iFrameElement.remove();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: _iframeWidget,
-        ),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Title :  ${widget.title}'),
+          Text('Subtitle : ${widget.subtitle}'),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0,
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 300, maxWidth: 400),
+              child: HtmlElementView(
+                viewType: widget.viewType,
+                key: UniqueKey(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

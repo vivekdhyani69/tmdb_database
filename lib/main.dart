@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_tmdb/core/routes/app_routes.dart';
 import 'package:movie_tmdb/data/repositories/movie_repository_impl.dart';
 import 'package:movie_tmdb/data/repositories/people_repository_impl.dart';
-import 'package:movie_tmdb/domain/usecases/free_watch_movie_useCase.dart';
+import 'package:movie_tmdb/domain/usecases/free_watch_movie_usecase.dart';
 import 'package:movie_tmdb/domain/usecases/get_movie_by_id_usecase.dart';
 
 import 'package:movie_tmdb/domain/usecases/get_movie_trailer.dart';
@@ -30,7 +30,8 @@ void main() {
     movieRepository,
   ); // Pass this to the bloc
   final rateMovieUsecase = RateMovieUsecase(movieRepository);
-  final getUserMovieratingUsecase = GetUserMovieRatingUsecase(movieRepository);
+  final getUserMovieRatingUsecase = GetUserMovieRatingUsecase(movieRepository);
+
   final searchMovie = SearchMovies(
     movieRepository,
   ); //it returns a list of movies based on the search query
@@ -70,7 +71,7 @@ void main() {
             create:
                 (context) => MovieRatingBloc(
                   rateMovieUsecase: rateMovieUsecase,
-                  getUserMovieRatingUsecase: getUserMovieratingUsecase,
+                  getUserMovieRatingUsecase: getUserMovieRatingUsecase,
                 ),
           ),
         ],

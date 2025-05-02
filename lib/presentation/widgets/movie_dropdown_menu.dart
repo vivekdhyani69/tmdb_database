@@ -20,14 +20,17 @@ class MovieOptionsMenu extends StatefulWidget {
 
 class _MovieOptionsMenuState extends State<MovieOptionsMenu> {
   bool showRating = false;
-  int selectedRating = 0;
+  // int selectedRating = 0;
+  final Map<int, int> movieratings = {};
+
+  ///stores rating per movie id
 
   @override
   void initState() {
     super.initState();
 
     // Default value in case API fails
-    selectedRating = (widget.voteAverage / 2).round();
+    // selectedRating = (widget.voteAverage / 2).round();
 
     // Fetch user's actual rating
     context.read<MovieRatingBloc>().add(
@@ -39,9 +42,9 @@ class _MovieOptionsMenuState extends State<MovieOptionsMenu> {
   Widget build(BuildContext context) {
     return BlocListener<MovieRatingBloc, MovieRatingState>(
       listener: (context, state) {
-        if (state is MovieRatingLoaded) {
+        if (state is MovieRatingLoaded && state.movieId == widget.movieId) {
           setState(() {
-            selectedRating = (state.rating / 2).round();
+            movieratings[state.movieId] = (state.rating / 2).round();
           });
         }
       },
@@ -94,66 +97,75 @@ class _MovieOptionsMenuState extends State<MovieOptionsMenu> {
               PopupMenuItem(
                 value: -1,
                 enabled: true,
-                child: StatefulBuilder(
-                  builder: (context, localSetState) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            localSetState(() {
-                              showRating = !showRating;
-                            });
-                          },
-                          child: Row(
-                            children: [
-                              Icon(
-                                showRating ? Icons.star : Icons.star_border,
-                                color: Colors.amber,
-                              ),
-                              const SizedBox(width: 8),
-                              const Text("Your Rating"),
-                            ],
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop(); // Close menu
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        // Initializing the rating from the global state
+                        int localSelected = movieratings[widget.movieId] ?? 0;
+
+                        return AlertDialog(
+                          title: const Text("Rate this Movie"),
+                          content: StatefulBuilder(
+                            builder: (context, localSetState) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(5, (index) {
+                                  return IconButton(
+                                    icon: Icon(
+                                      index < localSelected
+                                          ? Icons.star
+                                          : Icons.star_border,
+                                      color: Colors.amber,
+                                    ),
+                                    onPressed: () {
+                                      localSetState(() {
+                                        localSelected = index + 1;
+                                      });
+
+                                      context.read<MovieRatingBloc>().add(
+                                        SubmitRatingEvent(
+                                          movieId: widget.movieId,
+                                          rating: (index + 1) * 2.0,
+                                        ),
+                                      );
+
+                                      // Fetch updated rating after submission
+                                      context.read<MovieRatingBloc>().add(
+                                        FetchRatingEvent(
+                                          movieId: widget.movieId,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }),
+                              );
+                            },
                           ),
-                        ),
-                        if (showRating)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: List.generate(5, (index) {
-                                return IconButton(
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
-                                  icon: Icon(
-                                    index < selectedRating
-                                        ? Icons.star
-                                        : Icons.star_border,
-                                    color: Colors.amber,
-                                    size: 24,
-                                  ),
-                                  onPressed: () {
-                                    localSetState(() {
-                                      selectedRating = index + 1;
-                                    });
-
-                                    context.read<MovieRatingBloc>().add(
-                                      SubmitRatingEvent(
-                                        movieId: widget.movieId,
-                                        rating:
-                                            (index + 1) * 2.0, // Scale to 10
-                                      ),
-                                    );
-
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                              }),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text("Close"),
                             ),
-                          ),
-                      ],
+                          ],
+                        );
+                      },
                     );
                   },
+                  child: Row(
+                    children: [
+                      Icon(
+                        (movieratings[widget.movieId] ?? 0) > 0
+                            ? Icons.star
+                            : Icons.star_border,
+                        color: Colors.amber,
+                      ),
+                      const SizedBox(width: 8),
+                      const Text("Your Rating"),
+                    ],
+                  ),
                 ),
               ),
             ],
