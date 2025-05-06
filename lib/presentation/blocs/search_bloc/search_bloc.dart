@@ -9,6 +9,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc(this.searchMovies) : super(SearchInitial()) {
     on<SearchQueryChanged>((event, emit) async {
       if (event.query.trim().isEmpty) return;
+      if (event.query.trim().isEmpty) {
+        SearchInitial();
+        return;
+      }
       emit(SearchLoading());
       try {
         final results = await searchMovies.call(

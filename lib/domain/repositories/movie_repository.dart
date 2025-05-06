@@ -17,6 +17,9 @@ abstract class MovieRepository {
 
   Future<void> rateMovie(int movieId, double rating);
   Future<double> getUserRating(int movieId);
+  Future<bool> addWatchList(int movieId, bool isWatchList);
+  Future<List<MovieEntity>> getWatchlist();
+  // Future<bool> addToFavorite(int movieId, bool isFavorite);
 }
 
 

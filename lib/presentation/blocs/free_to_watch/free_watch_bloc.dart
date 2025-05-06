@@ -15,28 +15,7 @@ class FreeWatchBloc extends Bloc<FreeWatchEvent, FreeWatchState> {
       emit(FreeWatchLoading());
 
       try {
-        // final freeWatchMovies = [
-        //   FreeWatchEntity(
-        //     id: 1,
-        //     name: 'Movie 1',
-        //     imageUrl: 'https://example.com/movie1.jpg',
-        //     description: 'Description of Movie 1',
-        //     releaseDate: '2023-01-01',
-        //     rating: '8.5',
-        //   ),
-        //   FreeWatchEntity(
-        //     id: 2,
-        //     name: 'Movie 2',
-        //     imageUrl: 'https://example.com/movie2.jpg',
-        //     description: 'Description of Movie 2',
-        //     releaseDate: '2023-02-01',
-        //     rating: '7.5',
-        //   ),
-        // ];
-
         final freeWatchMovies = await getFreeWatchMovies.execute();
-
-        ///calls the api and returns the list of free watch movies
 
         emit(FreeWatchLoaded(freeWatchMovies));
       } catch (e) {

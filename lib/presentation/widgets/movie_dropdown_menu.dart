@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_tmdb/presentation/blocs/movie_ratings/movie_rating_bloc.dart';
 import 'package:movie_tmdb/presentation/blocs/movie_ratings/movie_rating_event.dart';
 import 'package:movie_tmdb/presentation/blocs/movie_ratings/movie_rating_state.dart';
+import 'package:movie_tmdb/presentation/blocs/watchlist_bloc/watchlist_bloc.dart';
+import 'package:movie_tmdb/presentation/blocs/watchlist_bloc/watchlist_event.dart';
+import 'package:movie_tmdb/presentation/screens/show_watchlist.dart';
 
 class MovieOptionsMenu extends StatefulWidget {
   final int movieId;
@@ -20,19 +23,14 @@ class MovieOptionsMenu extends StatefulWidget {
 
 class _MovieOptionsMenuState extends State<MovieOptionsMenu> {
   bool showRating = false;
-  // int selectedRating = 0;
+  bool tapWatchlist = false;
+  bool tapFavorite = false;
   final Map<int, int> movieratings = {};
-
-  ///stores rating per movie id
 
   @override
   void initState() {
     super.initState();
 
-    // Default value in case API fails
-    // selectedRating = (widget.voteAverage / 2).round();
-
-    // Fetch user's actual rating
     context.read<MovieRatingBloc>().add(
       FetchRatingEvent(movieId: widget.movieId),
     );
@@ -55,8 +53,6 @@ class _MovieOptionsMenuState extends State<MovieOptionsMenu> {
             print("Add to List - ${widget.movieId}");
           } else if (value == 1) {
             print("Favorite - ${widget.movieId}");
-          } else if (value == 2) {
-            print("Watchlist - ${widget.movieId}");
           }
         },
         itemBuilder:
@@ -72,7 +68,7 @@ class _MovieOptionsMenuState extends State<MovieOptionsMenu> {
                 ),
               ),
               const PopupMenuDivider(),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 1,
                 child: Row(
                   children: [
@@ -83,16 +79,48 @@ class _MovieOptionsMenuState extends State<MovieOptionsMenu> {
                 ),
               ),
               const PopupMenuDivider(),
-              const PopupMenuItem(
-                value: 2,
-                child: Row(
-                  children: [
-                    Icon(Icons.watch_later_outlined),
-                    SizedBox(width: 8),
-                    Text("Watchlist"),
-                  ],
+              PopupMenuItem(
+                enabled: false, // prevents automatic selection
+                child: StatefulBuilder(
+                  builder:
+                      (context, setState) => InkWell(
+                        onTap: () {
+                          context.read<WatchlistBloc>().add(
+                            AddWatchListEvent(
+                              movieId: widget.movieId,
+                              isWatchList: !tapWatchlist,
+                            ),
+                          );
+
+                          setState(() {
+                            tapWatchlist = !tapWatchlist;
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                tapWatchlist
+                                    ? "Added to Watchlist"
+                                    : "Removed from Watchlist",
+                              ),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              tapWatchlist
+                                  ? Icons.watch_later
+                                  : Icons.watch_later_outlined,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text("Watchlist"),
+                          ],
+                        ),
+                      ),
                 ),
               ),
+
               const PopupMenuDivider(),
               PopupMenuItem(
                 value: -1,

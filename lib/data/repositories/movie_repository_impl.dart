@@ -165,11 +165,60 @@ class MovieRepositoryImpl implements MovieRepository {
       if (jsonData['rated']?['value'] == false) {
         return 0.0;
       }
-      print((jsonData['rated']?['value']?.toDouble() ?? 0.0) + jsonData['id']);
 
       return jsonData['rated']?['value']?.toDouble() ?? 0.0;
     } else {
       throw Exception('Failed to get user rating');
+    }
+  }
+
+  Future<bool> addWatchList(int movieId, bool isWatchList) async {
+    try {
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}/account/$movieId/watchlist?language=en-US',
+      );
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer ${ApiConstants.token}',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "media_type": 'movie',
+          "media_id": movieId,
+          "watchlist": isWatchList,
+        }),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      } else {
+        throw Exception('Failed to add watchlist');
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<List<MovieEntity>> getWatchlist() async {
+    final response = await http.get(
+      Uri.parse(
+        "https://api.themoviedb.org/3/account/21958275/watchlist/movies?language=en-US&page=1&sort_by=created_at.asc",
+      ),
+      headers: {
+        'Authorization': 'Bearer ${ApiConstants.token}',
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonList = json.decode(response.body)['results'] as List;
+
+      return jsonList.map((json) => MovieModel.fromJson(json)).toList();
+    } else {
+      throw Exception("Failed to load watchlist");
     }
   }
 }

@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_tmdb/core/routes/app_routes.dart';
 import 'package:movie_tmdb/data/repositories/movie_repository_impl.dart';
 import 'package:movie_tmdb/data/repositories/people_repository_impl.dart';
+import 'package:movie_tmdb/domain/usecases/add_watchlist_usecase.dart';
 import 'package:movie_tmdb/domain/usecases/free_watch_movie_usecase.dart';
 import 'package:movie_tmdb/domain/usecases/get_movie_by_id_usecase.dart';
+import 'package:movie_tmdb/domain/usecases/get_movie_list_usecase.dart';
 
 import 'package:movie_tmdb/domain/usecases/get_movie_trailer.dart';
 import 'package:movie_tmdb/domain/usecases/get_user_movie_rating_usecase.dart';
@@ -20,12 +22,16 @@ import 'package:movie_tmdb/presentation/blocs/popular_people/people_bloc.dart';
 import 'package:movie_tmdb/presentation/blocs/popular_people/people_event.dart';
 import 'package:movie_tmdb/presentation/blocs/search_bloc/search_bloc.dart';
 import 'package:movie_tmdb/presentation/blocs/search_bloc/search_event.dart';
+import 'package:movie_tmdb/presentation/blocs/watchlist_bloc/watchlist_bloc.dart';
+import 'package:movie_tmdb/presentation/blocs/watchlist_bloc/watchlist_event.dart';
 import 'package:movie_tmdb/presentation/screens/home_screen.dart';
 
 void main() {
   final movieRepository = MovieRepositoryImpl(); // only created once
   final peopleRepository = PeopleRepositoryImpl();
   final getMovieByIdUseCase = GetMovieByIdUseCase(movieRepository);
+  final confirmWatchlistUseCase = AddWatchlistUseCase(movieRepository);
+  final getwatchlistusecase = GetWatchlistUseCase(movieRepository);
   final getFreeWatchMovies = FreeWatchMovieUsecase(
     movieRepository,
   ); // Pass this to the bloc
@@ -72,6 +78,13 @@ void main() {
                 (context) => MovieRatingBloc(
                   rateMovieUsecase: rateMovieUsecase,
                   getUserMovieRatingUsecase: getUserMovieRatingUsecase,
+                ),
+          ),
+          BlocProvider<WatchlistBloc>(
+            create:
+                (context) => WatchlistBloc(
+                  getWatchlistUseCase: getwatchlistusecase,
+                  addWatchlistUseCase: confirmWatchlistUseCase,
                 ),
           ),
         ],

@@ -136,19 +136,43 @@ class _FreeToWatchState extends State<FreeToWatch> {
                                     (context) => [
                                       const PopupMenuItem(
                                         value: 0,
-                                        child: Text("Add to List"),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.add_circle_outline),
+                                            SizedBox(width: 8),
+                                            Text("Add to List"),
+                                          ],
+                                        ),
                                       ),
                                       const PopupMenuItem(
                                         value: 1,
-                                        child: Text("Favorite"),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.favorite_outline),
+                                            SizedBox(width: 8),
+                                            Text("Favorite"),
+                                          ],
+                                        ),
                                       ),
                                       const PopupMenuItem(
                                         value: 2,
-                                        child: Text("Watchlist"),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.watch_later_outlined),
+                                            SizedBox(width: 8),
+                                            Text("Watchlist"),
+                                          ],
+                                        ),
                                       ),
                                       const PopupMenuItem(
                                         value: 3,
-                                        child: Text("Your Rating"),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.star),
+                                            SizedBox(width: 8),
+                                            Text("Rate Movie"),
+                                          ],
+                                        ),
                                       ),
                                     ],
                               ),

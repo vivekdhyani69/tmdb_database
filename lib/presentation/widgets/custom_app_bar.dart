@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_tmdb/presentation/blocs/watchlist_bloc/watchlist_bloc.dart';
+import 'package:movie_tmdb/presentation/blocs/watchlist_bloc/watchlist_event.dart';
 import 'package:movie_tmdb/presentation/screens/home_screen.dart';
 import 'package:movie_tmdb/presentation/screens/people_screen.dart';
+import 'package:movie_tmdb/presentation/screens/show_watchlist.dart';
 import 'package:movie_tmdb/presentation/widgets/header_dropdown_items.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -76,7 +80,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       // _iconButton(Icons.language),
                       _notificationIcon(Icons.notifications),
                       // _iconButton(Icons.account_circle),
-                      _accountIcon(),
+                      _accountIcon(context),
                       // _iconButton(Icons.search),r
                     ],
                   ),
@@ -203,7 +207,7 @@ Widget _notificationIcon(IconData icon) {
   );
 }
 
-Widget _accountIcon() {
+Widget _accountIcon(BuildContext context) {
   return PopupMenuButton<int>(
     icon: const Icon(Icons.account_circle, color: Colors.white),
     onSelected: (value) {
@@ -214,6 +218,15 @@ Widget _accountIcon() {
         print('Settings Clicked');
       } else if (value == 2) {
         print('Logout Clicked');
+      } else if (value == 3) {
+        context.read<WatchlistBloc>().add(fetchWatchListEvent());
+
+        Future.delayed(Duration.zero, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => ShowWatchlist()),
+          );
+        });
       }
     },
 
@@ -223,6 +236,7 @@ Widget _accountIcon() {
           const PopupMenuDivider(),
           const PopupMenuItem<int>(value: 1, child: Text("Settings")),
           const PopupMenuItem<int>(value: 2, child: Text("Logout")),
+          PopupMenuItem<int>(value: 3, child: Text("Watchlist")),
         ],
   );
 }

@@ -169,6 +169,9 @@ class _HomePageState extends State<HomePage> {
                 if (showDropdown)
                   BlocBuilder<SearchBloc, SearchState>(
                     builder: (context, state) {
+                      if (state is SearchInitial) {
+                        return const SizedBox();
+                      }
                       if (state is SearchLoading) {
                         return Center(child: CircularProgressIndicator());
                       }
@@ -190,7 +193,9 @@ class _HomePageState extends State<HomePage> {
                                   await Navigator.pushNamed(
                                     context,
                                     RouteNames.searchedMovie,
-                                    arguments: {'id': movieId},
+                                    arguments: {
+                                      'id': movieId,
+                                    }, 
                                   );
 
                                   controller.clear(); // Clear text field
@@ -213,6 +218,11 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
 
+            ///Navigator.pushNamed(
+            ///child : Column(
+            ///)
+            ///
+            ///)
             Container(
               // height: 300,
               width: double.maxFinite,

@@ -9,7 +9,6 @@ class MovieRatingBloc extends Bloc<MovieRatingEvent, MovieRatingState> {
   final RateMovieUsecase rateMovieUsecase;
   final GetUserMovieRatingUsecase getUserMovieRatingUsecase;
 
-  // Inject both use cases in the constructor
   MovieRatingBloc({
     required this.rateMovieUsecase,
     required this.getUserMovieRatingUsecase,
@@ -20,7 +19,6 @@ class MovieRatingBloc extends Bloc<MovieRatingEvent, MovieRatingState> {
       try {
         await rateMovieUsecase.call(event.movieId, event.rating);
 
-        ///
         emit(MovieRatingSuccess(message: 'Rating submitted successfully'));
         // Refresh rating after submission
         final rating = await getUserMovieRatingUsecase(event.movieId);
